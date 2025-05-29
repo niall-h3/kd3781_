@@ -44,6 +44,24 @@
     </div>
   </div>
   <div class="mb-3">
+    <label class="form-label">Please upload reports/evidence (required - max 3 photos - max 30mb each):</label>
+    <div class="row">
+      <div class="col-md-4 mb-2">
+        <label class="form-label">Photo 1:</label>
+        <input type="file" class="form-control" name="evidence_photo_1" accept="image/*" required>
+      </div>
+      <div class="col-md-4 mb-2">
+        <label class="form-label">Photo 2 (optional):</label>
+        <input type="file" class="form-control" name="evidence_photo_2" accept="image/*">
+      </div>
+      <div class="col-md-4 mb-2">
+        <label class="form-label">Photo 3 (optional):</label>
+        <input type="file" class="form-control" name="evidence_photo_3" accept="image/*">
+      </div>
+    </div>
+    <div class="form-text">Max 30 MB per photo. Allowed: png, jpg, jpeg, gif, webp.</div>
+  </div>
+  <div class="mb-3">
     <label class="form-label">Do you have their coordinates?</label><br>
     <div class="form-check form-check-inline">
       <input class="form-check-input" type="radio" name="coords_choice" id="coords-yes" value="yes" required>
@@ -67,3 +85,4 @@
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/form.js') }}"></script>
 {% endblock %}
+
