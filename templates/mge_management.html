@@ -1,0 +1,22 @@
+
+{% extends "base.html" %}
+{% block content %}
+  <h2>MGE Management</h2>
+  <div class="d-grid gap-2 col-6 mx-auto">
+    {% if is_open %}
+      <form method="post" action="{{ url_for('mge_toggle') }}">
+        <input type="hidden" name="action" value="close">
+        <button type="submit" class="btn btn-danger btn-lg">Close MGE</button>
+      </form>
+    {% else %}
+      <form method="post" action="{{ url_for('mge_toggle') }}">
+        <input type="hidden" name="action" value="open">
+        <button type="submit" class="btn btn-success btn-lg">Open MGE</button>
+      </form>
+    {% endif %}
+    
+    <a href="{{ url_for('add_commander') }}" class="btn btn-kingdom btn-lg">Add New Commander</a>
+    <a href="{{ url_for('mge_applications') }}" class="btn btn-kingdom btn-lg">View Applications</a>
+  </div>
+  <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light mt-3">Back to Dashboard</a>
+{% endblock %}

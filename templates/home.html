@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section text-center py-5">
+    <h1 class="display-4 mb-4">Welcome to Kingdom 3781</h1>
+    <p class="lead mb-4">Your trusted alliance management platform</p>
+    <div class="row justify-content-center">
+        <div class="col-md-4 mb-3">
+            <div class="card bg-dark text-white h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Report Issues</h5>
+                    <p class="card-text">Report problematic players and answer questions for kingdom leadership review.</p>
+                    <a href="{{ url_for('report') }}" class="btn btn-kingdom">Submit Report</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-dark text-white h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">MGE Applications</h5>
+                    <p class="card-text">Apply for Mightiest Governor Event.</p>
+                    <a href="{{ url_for('mge_application') }}" class="btn btn-kingdom">Apply for MGE</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-dark text-white h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">View DKP</h5>
+                    <p class="card-text">View performance of players in kingdom versus kingdom.</p>
+                    <a href="{{ url_for('view_dkp') }}" class="btn btn-kingdom">View DKP</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

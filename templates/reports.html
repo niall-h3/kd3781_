@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Open Reports</h2>
+  {% if reports %}
+    <table class="table table-dark table-striped">
+      <thead>
+        <tr><th>ID</th><th>Submitted (UTC)</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for r in reports %}
+          <tr>
+            <td>{{ r.id }}</td>
+            <td>{{ r.submitted_at }}</td>
+            <td><a href="{{ url_for('view_report', report_id=r.id) }}" class="btn btn-sm btn-kingdom">View</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No open reports.</p>
+  {% endif %}
+  <a href="{{ url_for('dealt_reports') }}" class="btn btn-outline-light mt-3">View dealt with</a>
+{% endblock %}

@@ -1,0 +1,47 @@
+ Environment updated. Reloading shell...
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.27:5000
+Press CTRL+C to quit
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 617-741-347
+172.31.128.27 - - [29/May/2025 16:21:29] "GET / HTTP/1.1" 200 -
+172.31.128.27 - - [29/May/2025 16:21:30] "GET /static/css/styles.css HTTP/1.1" 304 -
+172.31.128.27 - - [29/May/2025 16:21:34] "GET / HTTP/1.1" 200 -
+172.31.128.27 - - [29/May/2025 16:21:34] "GET /static/css/styles.css HTTP/1.1" 304 -
+172.31.128.27 - - [29/May/2025 16:21:39] "GET /mge HTTP/1.1" 200 -
+172.31.128.27 - - [29/May/2025 16:21:39] "GET /static/css/styles.css HTTP/1.1" 304 -
+172.31.128.27 - - [29/May/2025 16:22:54] "POST /mge HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 1488, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 1466, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 1463, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 872, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/app.py", line 223, in mge_application
+    profile_screenshot.save(os.path.join(UPLOAD_DIR, profile_filename))
+  File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/werkzeug/datastructures/file_storage.py", line 125, in save
+    dst = open(dst, "wb")
+          ^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/workspace/static/uploads/20250529162254_Screenshot_2025-05-28_at_12.06.19.png'
+172.31.128.27 - - [29/May/2025 16:22:55] "GET /mge?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+172.31.128.27 - - [29/May/2025 16:22:55] "GET /mge?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+172.31.128.27 - - [29/May/2025 16:22:55] "GET /mge?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+172.31.128.27 - - [29/May/2025 16:22:56] "GET /mge?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 304 -

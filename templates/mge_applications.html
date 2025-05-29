@@ -1,0 +1,85 @@
+
+{% extends "base.html" %}
+{% block content %}
+  <h2>MGE Applications</h2>
+  {% if applications %}
+    <table class="table table-dark table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>
+            <a href="?sort=name&order={% if current_sort == 'name' and current_order == 'asc' %}desc{% else %}asc{% endif %}" class="text-white text-decoration-none">
+              ROK Name 
+              {% if current_sort == 'name' %}
+                {% if current_order == 'asc' %}↑{% else %}↓{% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th>
+            <a href="?sort=power&order={% if current_sort == 'power' and current_order == 'desc' %}asc{% else %}desc{% endif %}" class="text-white text-decoration-none">
+              Power 
+              {% if current_sort == 'power' %}
+                {% if current_order == 'asc' %}↑{% else %}↓{% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th>
+            <a href="?sort=kp&order={% if current_sort == 'kp' and current_order == 'desc' %}asc{% else %}desc{% endif %}" class="text-white text-decoration-none">
+              KP 
+              {% if current_sort == 'kp' %}
+                {% if current_order == 'asc' %}↑{% else %}↓{% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th>
+            <a href="?sort=total_resources&order={% if current_sort == 'total_resources' and current_order == 'desc' %}asc{% else %}desc{% endif %}" class="text-white text-decoration-none">
+              Total Resources (M) 
+              {% if current_sort == 'total_resources' %}
+                {% if current_order == 'asc' %}↑{% else %}↓{% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th>
+            <a href="?sort=total_speedups&order={% if current_sort == 'total_speedups' and current_order == 'desc' %}asc{% else %}desc{% endif %}" class="text-white text-decoration-none">
+              Total Speedups (Days) 
+              {% if current_sort == 'total_speedups' %}
+                {% if current_order == 'asc' %}↑{% else %}↓{% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th>
+            <a href="?sort=submitted_at&order={% if current_sort == 'submitted_at' and current_order == 'desc' %}asc{% else %}desc{% endif %}" class="text-white text-decoration-none">
+              Submitted (UTC) 
+              {% if current_sort == 'submitted_at' %}
+                {% if current_order == 'asc' %}↑{% else %}↓{% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for app in applications %}
+          <tr>
+            <td>{{ app.id }}</td>
+            <td>{{ app.rok_name }}</td>
+            <td>{{ app.power }}</td>
+            <td>{{ app.kp }}</td>
+            <td>{{ app.total_resources }}</td>
+            <td>{{ app.total_speedups }}</td>
+            <td>{{ app.submitted_at }}</td>
+            <td><a href="{{ url_for('view_mge_application', application_id=app.id) }}" class="btn btn-sm btn-kingdom">View</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if role == 'admin' %}
+      <form method="post" action="{{ url_for('delete_all_mge') }}" onsubmit="return confirm('Are you sure you want to delete ALL MGE applications?')">
+        <button type="submit" class="btn btn-danger mt-3">Delete All Applications</button>
+      </form>
+    {% endif %}
+  {% else %}
+    <p>No MGE applications.</p>
+  {% endif %}
+  <a href="{{ url_for('mge_management') }}" class="btn btn-outline-light mt-3">Back to MGE Management</a>
+{% endblock %}

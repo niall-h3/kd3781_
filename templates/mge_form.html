@@ -1,0 +1,202 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">MGE Application Form</h2>
+<form method="post" enctype="multipart/form-data" novalidate>
+  <div class="mb-3">
+    <label class="form-label">What is your name on ROK:</label>
+    <input type="text" class="form-control" name="rok_name" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Send a screenshot of your ROK profile:</label>
+    <input type="file" class="form-control" name="profile_screenshot" required>
+    <div class="form-text">Max 30 MB. Allowed: png, jpg, jpeg, gif, webp.</div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">What is your power:</label>
+    <input type="text" class="form-control" name="power" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">What is your KP:</label>
+    <input type="text" class="form-control" name="kp" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">What is your VIP:</label>
+    <input type="text" class="form-control" name="vip" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">What is your specialty (unit type):</label>
+    <div class="form-check">
+      {% for specialty in ["Infantry", "Cavalry", "Archer"] %}
+        <input class="form-check-input" type="checkbox" name="unit_specialty" id="unit-{{loop.index}}" value="{{specialty}}">
+        <label class="form-check-label" for="unit-{{loop.index}}">{{specialty}}</label><br>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">What is your specialty (combat type):</label>
+    <div class="form-check">
+      {% for specialty in ["Rally", "Garrison", "Openfield"] %}
+        <input class="form-check-input" type="checkbox" name="combat_specialty" id="combat-{{loop.index}}" value="{{specialty}}">
+        <label class="form-check-label" for="combat-{{loop.index}}">{{specialty}}</label><br>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Which commander do you wish to unlock?:</label>
+    <select class="form-select" name="desired_commander" required>
+      <option value="">Select a commander</option>
+      {% for commander in commanders %}
+        <option value="{{commander}}">{{commander}}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Have you unlocked this commander yet:</label><br>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="has_commander" id="has-yes" value="Yes" required>
+      <label class="form-check-label" for="has-yes">Yes</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="has_commander" id="has-no" value="No" required>
+      <label class="form-check-label" for="has-no">No</label>
+    </div>
+    <div id="commander-photo-field" class="mt-2" style="display:none;">
+      <label class="form-label">Please upload a photo of this commander:</label>
+      <input type="file" class="form-control" name="commander_photo">
+      <div class="form-text">Max 30 MB. Allowed: png, jpg, jpeg, gif, webp.</div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Who do you plan to pair it with?</label>
+    <div class="mb-2">
+      <label class="form-label">What commander?:</label>
+      <input type="text" class="form-control" name="pair_commander" required>
+    </div>
+    <div class="mb-2">
+      <label class="form-label">Skill level (in format x/x/x/x - each x 1-5):</label>
+      <input type="text" class="form-control" name="pair_skill_level" placeholder="e.g., 5/5/5/1" required>
+    </div>
+    <div class="mb-2">
+      <label class="form-label">Send a photo of equipment you plan to pair it with:</label>
+      <input type="file" class="form-control" name="equipment_photo" required>
+      <div class="form-text">Max 30 MB. Allowed: png, jpg, jpeg, gif, webp.</div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">How many speedups do you have:</label>
+    <div class="row">
+      <div class="col-md-6 mb-2">
+        <label class="form-label">Days of Healing:</label>
+        <input type="number" class="form-control" name="healing_speedups" required>
+      </div>
+      <div class="col-md-6 mb-2">
+        <label class="form-label">Days of Training:</label>
+        <input type="number" class="form-control" name="training_speedups" required>
+      </div>
+      <div class="col-md-6 mb-2">
+        <label class="form-label">Days of Research:</label>
+        <input type="number" class="form-control" name="research_speedups" required>
+      </div>
+      <div class="col-md-6 mb-2">
+        <label class="form-label">Days of Universal:</label>
+        <input type="number" class="form-control" name="universal_speedups" required>
+      </div>
+      <div class="col-md-6 mb-2">
+        <label class="form-label">Days of Building:</label>
+        <input type="number" class="form-control" name="building_speedups" required>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">How many resources do you have:</label>
+    <div class="row">
+      <div class="col-md-6 mb-2">
+        <label class="form-label">Millions of Food:</label>
+        <input type="number" class="form-control" name="food_resources" required>
+      </div>
+      <div class="col-md-6 mb-2">
+        <label class="form-label">Millions of Wood:</label>
+        <input type="number" class="form-control" name="wood_resources" required>
+      </div>
+      <div class="col-md-6 mb-2">
+        <label class="form-label">Millions of Stone:</label>
+        <input type="number" class="form-control" name="stone_resources" required>
+      </div>
+      <div class="col-md-6 mb-2">
+        <label class="form-label">Millions of Gold:</label>
+        <input type="number" class="form-control" name="gold_resources" required>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Please upload a photo of resources:</label>
+    <input type="file" class="form-control" name="resources_photo" required>
+    <div class="form-text">Max 30 MB. Allowed: png, jpg, jpeg, gif, webp.</div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Please upload a photo of speedups:</label>
+    <input type="file" class="form-control" name="speedups_photo" required>
+    <div class="form-text">Max 30 MB. Allowed: png, jpg, jpeg, gif, webp.</div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Do you just want 10 heads to unlock:</label><br>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="just_unlock" id="unlock-yes" value="Yes" required>
+      <label class="form-check-label" for="unlock-yes">Yes</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="just_unlock" id="unlock-no" value="No" required>
+      <label class="form-check-label" for="unlock-no">No</label>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">How many gold heads do you have:</label>
+    <input type="number" class="form-control" name="gold_heads" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Any other info? (optional):</label>
+    <textarea class="form-control" name="other_info" rows="3"></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-kingdom">Submit</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const hasCommanderRadios = document.querySelectorAll('input[name="has_commander"]');
+    const commanderPhotoField = document.getElementById('commander-photo-field');
+
+    function toggleCommanderPhoto() {
+        const hasYes = document.querySelector('input[name="has_commander"]:checked');
+        if (hasYes && hasYes.value === 'Yes') {
+            commanderPhotoField.style.display = 'block';
+        } else {
+            commanderPhotoField.style.display = 'none';
+        }
+    }
+
+    hasCommanderRadios.forEach(radio => {
+        radio.addEventListener('change', toggleCommanderPhoto);
+    });
+});
+</script>
+{% endblock %}

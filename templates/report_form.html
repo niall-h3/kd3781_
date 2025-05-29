@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Player Report Form</h2>
+<form method="post" enctype="multipart/form-data" novalidate>
+  <div class="mb-3">
+    <label class="form-label">Please enter your in game name:</label>
+    <input type="text" class="form-control" name="reporter_name" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Please enter your in game ID (optional):</label>
+    <input type="number" class="form-control" name="reporter_game_id">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Why are you reporting them? (select at least one)</label>
+    <div class="form-check">
+      {% for reason in ["Attacking cities","Attacking resource nodes","Attacking farm accounts","MGE violation","Illegal immigrant","Attacking troops","Other"] %}
+        <input class="form-check-input" type="checkbox" name="reason" id="reason-{{loop.index}}" value="{{reason}}" {% if reason=='Other' %}id="reason-other"{% endif %}>
+        <label class="form-check-label" for="reason-{{loop.index}}">{{reason}}</label><br>
+      {% endfor %}
+    </div>
+    <div id="other-reason-field" style="display:none;">
+      <input type="text" class="form-control mt-2" name="other_reason" placeholder="Describe other reason">
+    </div>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Please either upload a photo of this players profile or provide their ID and account name:</label>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="evidence_choice" id="evidence-photo" value="photo" checked>
+      <label class="form-check-label" for="evidence-photo">Photo</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="evidence_choice" id="evidence-text" value="text">
+      <label class="form-check-label" for="evidence-text">Name and ID</label>
+    </div>
+    <div id="photo-group" class="mt-2">
+      <input type="file" class="form-control" name="evidence_photo">
+      <div class="form-text">Max 30 MB. Allowed: png, jpg, jpeg, gif, webp.</div>
+    </div>
+    <div id="text-group" class="mt-2" style="display:none;">
+      <label class="form-label">What is their name?:</label>
+      <input type="text" class="form-control mb-2" name="evidence_name" placeholder="Enter their name" required>
+      <label class="form-label">What is their ID?:</label>
+      <input type="number" class="form-control" name="evidence_id" placeholder="Enter their ID" required>
+    </div>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Do you have their coordinates?</label><br>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="coords_choice" id="coords-yes" value="yes" required>
+      <label class="form-check-label" for="coords-yes">Yes</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="coords_choice" id="coords-no" value="no">
+      <label class="form-check-label" for="coords-no">No</label>
+    </div>
+    <div id="coords-field" class="mt-2" style="display:none;">
+      <input type="text" class="form-control" name="coords" placeholder="e.g., X:1234 Y:567">
+    </div>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Please include any other information (optional):</label>
+    <textarea class="form-control" name="extra_info" rows="3"></textarea>
+  </div>
+  <button type="submit" class="btn btn-kingdom">Submit</button>
+</form>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/form.js') }}"></script>
+{% endblock %}

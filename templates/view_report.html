@@ -1,0 +1,58 @@
+
+{% extends "base.html" %}
+{% block content %}
+  <h2>Report #{{ report.id }}</h2>
+  <ul class="list-group mb-3">
+    <li class="list-group-item bg-dark text-white"><strong>Reporter Name:</strong> {{ report.reporter_name }}</li>
+    {% if report.reporter_game_id %}
+      <li class="list-group-item bg-dark text-white"><strong>Reporter Game ID:</strong> {{ report.reporter_game_id }}</li>
+    {% endif %}
+    <li class="list-group-item bg-dark text-white"><strong>Reasons:</strong>
+      {{ ', '.join(json.loads(report.reasons)) }}
+      {% if report.other_reason %} (Other: {{ report.other_reason }}){% endif %}
+    </li>
+    <li class="list-group-item bg-dark text-white"><strong>Evidence:</strong>
+      {% if report.evidence_type == 'photo' %}
+        {% if report.evidence_path %}
+          <div class="mt-2">
+            <img src="{{ url_for('uploaded_file', filename=report.evidence_path) }}" alt="Evidence Photo" class="img-fluid" style="max-width: 500px; max-height: 400px;">
+          </div>
+        {% else %}
+          No photo uploaded
+        {% endif %}
+      {% else %}
+        {% if report.evidence_name and report.evidence_game_id %}
+          Name: {{ report.evidence_name }}, ID: {{ report.evidence_game_id }}
+        {% else %}
+          Name and ID not provided
+        {% endif %}
+      {% endif %}
+    </li>
+    {% if report.coords %}
+      <li class="list-group-item bg-dark text-white"><strong>Coordinates:</strong> {{ report.coords }}</li>
+    {% endif %}
+    {% if report.extra_info %}
+      <li class="list-group-item bg-dark text-white"><strong>Extra Info:</strong> {{ report.extra_info }}</li>
+    {% endif %}
+    <li class="list-group-item bg-dark text-white"><strong>Submitted At (UTC):</strong> {{ report.submitted_at }}</li>
+    {% if report.dealt_with == 1 %}
+      <li class="list-group-item bg-dark text-white"><strong>Dealt with At (UTC):</strong> {{ report.dealt_with_at }}</li>
+    {% endif %}
+  </ul>
+  
+  <div class="d-flex gap-2 mb-3">
+    <form method="post" class="d-inline">
+      {% if report.dealt_with == 0 %}
+        <button name="action" value="deal" class="btn btn-success">Mark as dealt with</button>
+      {% else %}
+        <button name="action" value="undeal" class="btn btn-warning">Mark as not dealt with</button>
+      {% endif %}
+    </form>
+    
+    <form method="post" class="d-inline">
+      <button name="action" value="delete" class="btn btn-danger" onclick="return confirm('Delete this report? This cannot be undone.')">Delete (Admin Only)</button>
+    </form>
+  </div>
+  
+  <a href="{{ url_for('reports') }}" class="btn btn-outline-light">Back to all reports</a>
+{% endblock %}

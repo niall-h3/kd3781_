@@ -1,0 +1,13 @@
+
+{% extends "base.html" %}
+{% block content %}
+  <h2>Add New Commander</h2>
+  <form method="post">
+    <div class="mb-3">
+      <label class="form-label">Commander Name:</label>
+      <input type="text" class="form-control" name="commander_name" required>
+    </div>
+    <button type="submit" class="btn btn-kingdom">Add Commander</button>
+  </form>
+  <a href="{{ url_for('mge_management') }}" class="btn btn-outline-light mt-3">Back to MGE Management</a>
+{% endblock %}

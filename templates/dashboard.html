@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Dashboard</h2>
+  <div class="d-grid gap-2 col-6 mx-auto">
+    <a href="{{ url_for('reports') }}" class="btn btn-kingdom btn-lg">View Reports</a>
+    <a href="{{ url_for('mge_management') }}" class="btn btn-kingdom btn-lg">MGE</a>
+    {% if role == 'admin' %}
+      <a href="{{ url_for('add_user') }}" class="btn btn-kingdom btn-lg">Add Users</a>
+      <a href="{{ url_for('dkp_management') }}" class="btn btn-kingdom btn-lg">DKP</a>
+    {% endif %}
+  </div>
+{% endblock %}

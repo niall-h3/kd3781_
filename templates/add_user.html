@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Add User</h2>
+  <form method="post">
+    <div class="mb-3">
+      <label class="form-label">Username</label>
+      <input type="text" class="form-control" name="username" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-control" name="password" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Role</label>
+      <select class="form-select" name="role" required>
+        <option value="council">Council</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Email (optional)</label>
+      <input type="email" class="form-control" name="email">
+    </div>
+    <button type="submit" class="btn btn-kingdom">Create User</button>
+  </form>
+  <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light mt-3">Back to dashboard</a>
+{% endblock %}
