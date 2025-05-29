@@ -64,6 +64,7 @@ def init_db():
             evidence_path TEXT,
             evidence_name TEXT,
             evidence_game_id TEXT,
+            evidence_photos TEXT,
             coords TEXT,
             extra_info TEXT,
             submitted_at TEXT NOT NULL,
@@ -156,6 +157,13 @@ def init_db():
         if not cur.fetchone():
             cur.execute("INSERT INTO dkp_settings (id, is_open, csv_file) VALUES (1, 0, NULL)")
             conn.commit()
+        
+        # Add evidence_photos column if it doesn't exist (for existing databases)
+        try:
+            cur.execute("ALTER TABLE reports ADD COLUMN evidence_photos TEXT")
+            conn.commit()
+        except sqlite3.OperationalError:
+            pass  # Column already exists
         
         # Initialize default commanders
         default_commanders = ["Ragnar Lodbrok", "Charles Martel", "Julius Caesar"]
@@ -359,6 +367,19 @@ def report():
                 flash("Please provide both name and ID when selecting 'Name and ID' option.", "danger")
                 return redirect(request.url)
 
+        # Handle multiple evidence photos
+        evidence_photos = []
+        for i in range(1, 4):  # Check for up to 3 photos
+            photo = request.files.get(f'evidence_photo_{i}')
+            if photo and photo.filename and allowed_file(photo.filename):
+                photo_filename = datetime.utcnow().strftime("%Y%m%d%H%M%S_") + f"_{i}_" + secure_filename(photo.filename)
+                photo.save(os.path.join(UPLOAD_DIR, photo_filename))
+                evidence_photos.append(photo_filename)
+        
+        if not evidence_photos:
+            flash("Please upload at least one evidence photo.", "danger")
+            return redirect(request.url)
+
         coords = request.form.get('coords') or None
         extra_info = request.form.get('extra_info') or None
 
@@ -368,11 +389,11 @@ def report():
                 """INSERT INTO reports
                 (reporter_name, reporter_game_id, reasons, other_reason,
                  evidence_type, evidence_path, evidence_name, evidence_game_id,
-                 coords, extra_info, submitted_at)
-                VALUES (?,?,?,?,?,?,?,?,?,?,?)""", (
+                 evidence_photos, coords, extra_info, submitted_at)
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""", (
                     name, game_id, json.dumps(reasons), other_reason,
                     evidence_type, evidence_path, evidence_name, evidence_game_id,
-                    coords, extra_info, datetime.now(timezone.utc).isoformat()
+                    json.dumps(evidence_photos), coords, extra_info, datetime.now(timezone.utc).isoformat()
                 )
             )
             report_id = cur.lastrowid
@@ -519,6 +540,84 @@ def add_user():
             except sqlite3.IntegrityError:
                 flash("Username already exists.", "danger")
     return render_template("add_user.html")
+
+@app.route("/view_accounts")
+@login_required('admin')
+def view_accounts():
+    with connect_db() as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users ORDER BY created_at DESC")
+        users = cur.fetchall()
+    return render_template("view_accounts.html", users=users)
+
+@app.route("/edit_user/<int:user_id>", methods=['GET', 'POST'])
+@login_required('admin')
+def edit_user(user_id):
+    with connect_db() as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+        user = cur.fetchone()
+        
+        if not user:
+            flash("User not found.", "warning")
+            return redirect(url_for('view_accounts'))
+        
+        if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+            role = request.form['role']
+            email = request.form.get('email') or None
+            
+            try:
+                if password:
+                    # Update with new password
+                    cur.execute("""UPDATE users SET username = ?, password_hash = ?, email = ?, role = ?
+                                   WHERE id = ?""", (
+                        username,
+                        generate_password_hash(password),
+                        email,
+                        role,
+                        user_id
+                    ))
+                else:
+                    # Update without changing password
+                    cur.execute("""UPDATE users SET username = ?, email = ?, role = ?
+                                   WHERE id = ?""", (
+                        username,
+                        email,
+                        role,
+                        user_id
+                    ))
+                conn.commit()
+                flash("User updated successfully.", "success")
+                return redirect(url_for('view_accounts'))
+            except sqlite3.IntegrityError:
+                flash("Username already exists.", "danger")
+    
+    return render_template("edit_user.html", user=user)
+
+@app.route("/delete_user/<int:user_id>", methods=['POST'])
+@login_required('admin')
+def delete_user(user_id):
+    with connect_db() as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT username FROM users WHERE id = ?", (user_id,))
+        user = cur.fetchone()
+        
+        if not user:
+            flash("User not found.", "warning")
+            return redirect(url_for('view_accounts'))
+        
+        # Prevent deletion of the main admin account
+        if user['username'] == 'twzytidal':
+            flash("Cannot delete the main admin account.", "danger")
+            return redirect(url_for('view_accounts'))
+        
+        cur.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        conn.commit()
+        flash(f"User '{user['username']}' deleted successfully.", "info")
+    
+    return redirect(url_for('view_accounts'))
 
 # MGE Management Routes
 @app.route("/mge_management")
