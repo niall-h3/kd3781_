@@ -16,6 +16,9 @@
     {% endif %}
     
     <a href="{{ url_for('add_commander') }}" class="btn btn-kingdom btn-lg">Add New Commander</a>
+    {% if role == 'admin' %}
+      <a href="{{ url_for('remove_commander') }}" class="btn btn-warning btn-lg">Remove Commander</a>
+    {% endif %}
     <a href="{{ url_for('mge_applications') }}" class="btn btn-kingdom btn-lg">View Applications</a>
   </div>
   <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light mt-3">Back to Dashboard</a>
