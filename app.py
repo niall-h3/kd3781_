@@ -623,11 +623,14 @@ def delete_user(user_id):
 @app.route("/mge_management")
 @login_required()
 def mge_management():
+    user_id = session['user_id']
     with connect_db() as conn:
         cur = conn.cursor()
         cur.execute("SELECT is_open FROM mge_settings WHERE id = 1")
         is_open = cur.fetchone()['is_open']
-    return render_template("mge_management.html", is_open=is_open)
+        cur.execute("SELECT role FROM users WHERE id = ?", (user_id,))
+        role = cur.fetchone()['role']
+    return render_template("mge_management.html", is_open=is_open, role=role)
 
 @app.route("/mge_toggle", methods=['POST'])
 @login_required()
@@ -656,6 +659,29 @@ def add_commander():
                 flash("Commander already exists.", "danger")
         return redirect(url_for('mge_management'))
     return render_template("add_commander.html")
+
+@app.route("/remove_commander", methods=['GET', 'POST'])
+@login_required('admin')
+def remove_commander():
+    if request.method == 'POST':
+        commander_id = request.form['commander_id']
+        with connect_db() as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT name FROM mge_commanders WHERE id = ?", (commander_id,))
+            commander = cur.fetchone()
+            if commander:
+                cur.execute("DELETE FROM mge_commanders WHERE id = ?", (commander_id,))
+                conn.commit()
+                flash(f"Commander '{commander['name']}' removed successfully.", "info")
+            else:
+                flash("Commander not found.", "warning")
+        return redirect(url_for('mge_management'))
+    
+    with connect_db() as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT id, name FROM mge_commanders ORDER BY name")
+        commanders = cur.fetchall()
+    return render_template("remove_commander.html", commanders=commanders)
 
 @app.route("/mge_applications")
 @login_required()
@@ -868,3 +894,4 @@ def uploaded_file(filename):
 if __name__ == "__main__":
     init_db()
     app.run(host="0.0.0.0", port=5000, debug=True)
+
