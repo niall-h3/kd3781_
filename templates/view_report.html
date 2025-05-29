@@ -28,6 +28,17 @@
         {% endif %}
       {% endif %}
     </li>
+    {% if report.evidence_photos %}
+      <li class="list-group-item bg-dark text-white"><strong>Evidence Photos:</strong>
+        <div class="row mt-2">
+          {% for photo in json.loads(report.evidence_photos) %}
+            <div class="col-md-4 mb-2">
+              <img src="{{ url_for('uploaded_file', filename=photo) }}" alt="Evidence Photo {{ loop.index }}" class="img-fluid" style="max-width: 100%; max-height: 300px;">
+            </div>
+          {% endfor %}
+        </div>
+      </li>
+    {% endif %}
     {% if report.coords %}
       <li class="list-group-item bg-dark text-white"><strong>Coordinates:</strong> {{ report.coords }}</li>
     {% endif %}
