@@ -23,5 +23,8 @@
     </div>
     <button type="submit" class="btn btn-kingdom">Create User</button>
   </form>
-  <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light mt-3">Back to dashboard</a>
+  <div class="mt-3">
+    <a href="{{ url_for('view_accounts') }}" class="btn btn-secondary me-2">View Accounts</a>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light">Back to dashboard</a>
+  </div>
 {% endblock %}
