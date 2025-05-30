@@ -14,12 +14,19 @@ from flask import (
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-DB_PATH = os.path.join(BASE_DIR, "database.db")
-UPLOAD_DIR = os.path.join(BASE_DIR, "static", "uploads")
-ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
-ALLOWED_CSV_EXTENSIONS = {"csv"}
-MAX_CONTENT_LENGTH = 30 * 1024 * 1024  # 30 MB
+# ------------------------------------------------------------------
+# Paths: use DATA_DIR when running on Render, fall back to repo dir.
+# ------------------------------------------------------------------
+BASE_DIR  = os.path.abspath(os.path.dirname(__file__))
+DATA_DIR  = os.getenv("DATA_DIR", BASE_DIR)          # <-- only change
+
+DB_PATH   = os.path.join(DATA_DIR, "database.db")
+UPLOAD_DIR = os.path.join(DATA_DIR, "static", "uploads")
+
+ALLOWED_EXTENSIONS      = {"png", "jpg", "jpeg", "gif", "webp"}
+ALLOWED_CSV_EXTENSIONS  = {"csv"}
+MAX_CONTENT_LENGTH      = 30 * 1024 * 1024  # 30 MB
+
 
 # Email (Gmail SMTP) – fill via Replit Secrets
 SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
