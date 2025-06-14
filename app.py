@@ -13,6 +13,8 @@ from flask import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 # ------------------------------------------------------------------
 # Paths: use DATA_DIR when running on Render, fall back to repo dir.
@@ -37,6 +39,9 @@ SMTP_PASS = os.getenv("SMTP_PASS")
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "change-me")
 app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
+
+# Rate limiting to help mitigate potential DDoS attacks
+limiter = Limiter(get_remote_address, app=app, default_limits=["100 per minute"])
 
 # ------------- Utility ------------- #
 def connect_db():
