@@ -7,6 +7,7 @@
     {% if role == 'admin' %}
       <a href="{{ url_for('add_user') }}" class="btn btn-kingdom btn-lg">Add Users</a>
       <a href="{{ url_for('dkp_management') }}" class="btn btn-kingdom btn-lg">DKP</a>
+      <a href="{{ url_for('guardians') }}" class="btn btn-kingdom btn-lg">Guardians</a>
     {% endif %}
   </div>
 {% endblock %}
