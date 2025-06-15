@@ -133,6 +133,24 @@ def init_db():
             csv_file TEXT
         )
     """)
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS guardian_settings (
+            id INTEGER PRIMARY KEY,
+            map_image TEXT
+        )
+    """)
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS guardian_times (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            site_type TEXT NOT NULL,
+            alliance TEXT NOT NULL,
+            time1 TEXT NOT NULL,
+            time2 TEXT NOT NULL,
+            x_coord TEXT NOT NULL,
+            y_coord TEXT NOT NULL,
+            created_at TEXT NOT NULL
+        )
+    """)
     conn.commit()
     conn.close()
 
@@ -163,6 +181,12 @@ def init_db():
         cur.execute("SELECT id FROM dkp_settings WHERE id = 1")
         if not cur.fetchone():
             cur.execute("INSERT INTO dkp_settings (id, is_open, csv_file) VALUES (1, 0, NULL)")
+            conn.commit()
+
+        # Initialize Guardian settings
+        cur.execute("SELECT id FROM guardian_settings WHERE id = 1")
+        if not cur.fetchone():
+            cur.execute("INSERT INTO guardian_settings (id, map_image) VALUES (1, NULL)")
             conn.commit()
         
         # Add evidence_photos column if it doesn't exist (for existing databases)
@@ -892,6 +916,61 @@ def view_dkp():
     
     return render_template("view_dkp.html", headers=headers, data=filtered_data, 
                          search_name=search_name, search_id=search_id, sort_by=sort_by)
+
+@app.route("/guardian_times")
+def guardian_times():
+    with connect_db() as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT map_image FROM guardian_settings WHERE id = 1")
+        row = cur.fetchone()
+        map_image = row['map_image'] if row else None
+        cur.execute("SELECT * FROM guardian_times ORDER BY time1")
+        entries = cur.fetchall()
+    return render_template("guardian_times.html", map_image=map_image, entries=entries)
+
+@app.route("/guardians", methods=['GET', 'POST'])
+@login_required('admin')
+def guardians():
+    with connect_db() as conn:
+        cur = conn.cursor()
+        if request.method == 'POST':
+            form_type = request.form.get('form_type')
+            if form_type == 'map':
+                file = request.files.get('map_image')
+                if file and file.filename and allowed_file(file.filename):
+                    filename = datetime.utcnow().strftime("%Y%m%d%H%M%S_") + secure_filename(file.filename)
+                    file.save(os.path.join(UPLOAD_DIR, filename))
+                    cur.execute("SELECT map_image FROM guardian_settings WHERE id = 1")
+                    old = cur.fetchone()
+                    if old and old['map_image']:
+                        old_path = os.path.join(UPLOAD_DIR, old['map_image'])
+                        if os.path.exists(old_path):
+                            os.remove(old_path)
+                    cur.execute("UPDATE guardian_settings SET map_image = ? WHERE id = 1", (filename,))
+                    conn.commit()
+                    flash("Map uploaded.", "success")
+            elif form_type == 'time':
+                site_type = request.form['site_type']
+                alliance = request.form['alliance']
+                time1 = request.form['time1']
+                time2 = request.form['time2']
+                x_coord = request.form['x_coord']
+                y_coord = request.form['y_coord']
+                cur.execute(
+                    """INSERT INTO guardian_times (site_type, alliance, time1, time2, x_coord, y_coord, created_at)
+                        VALUES (?,?,?,?,?,?,?)""",
+                    (site_type, alliance, time1, time2, x_coord, y_coord, datetime.now(timezone.utc).isoformat())
+                )
+                conn.commit()
+                flash("Guardian time added.", "success")
+
+        cur.execute("SELECT map_image FROM guardian_settings WHERE id = 1")
+        row = cur.fetchone()
+        map_image = row['map_image'] if row else None
+        cur.execute("SELECT * FROM guardian_times ORDER BY time1")
+        entries = cur.fetchall()
+
+    return render_template("guardians.html", map_image=map_image, entries=entries)
 
 # Static uploads serve (simple)
 @app.route('/uploads/<filename>')

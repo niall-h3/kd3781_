@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Guardians Map</h2>
+{% if map_image %}
+<div class="mb-4 text-center">
+    <img src="{{ url_for('uploaded_file', filename=map_image) }}" class="img-fluid" alt="Guardians Map">
+</div>
+{% endif %}
+{% if entries %}
+<div class="table-responsive">
+<table class="table table-dark table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Site Type</th>
+            <th>Alliance</th>
+            <th>Time 1 (UTC)</th>
+            <th>Time 2 (UTC)</th>
+            <th>X</th>
+            <th>Y</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in entries %}
+        <tr>
+            <td>{{ e['site_type'] }}</td>
+            <td>{{ e['alliance'] }}</td>
+            <td>{{ e['time1'] }}</td>
+            <td>{{ e['time2'] }}</td>
+            <td>{{ e['x_coord'] }}</td>
+            <td>{{ e['y_coord'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<p>No guardian times recorded.</p>
+{% endif %}
+<a href="{{ url_for('home') }}" class="btn btn-secondary mt-3">Back to Home</a>
+{% endblock %}

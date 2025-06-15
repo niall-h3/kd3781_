@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Guardians Management</h2>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card bg-dark text-white mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Upload Map</h5>
+                <form method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="form_type" value="map">
+                    <div class="mb-3">
+                        <input type="file" class="form-control" name="map_image" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn btn-kingdom">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card bg-dark text-white mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Add Guardian Time</h5>
+                <form method="post">
+                    <input type="hidden" name="form_type" value="time">
+                    <div class="mb-2">
+                        <label class="form-label">Site Type</label>
+                        <select class="form-select" name="site_type" required>
+                            <option>Crusader Camp</option>
+                            <option>Crusader Fortress</option>
+                            <option>Circle</option>
+                            <option>Hieron</option>
+                            <option>Tempest Sanctuary</option>
+                            <option>The Great Ziggurat</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Alliance</label>
+                        <select class="form-select" name="alliance" required>
+                            <option>EK</option>
+                            <option>EG</option>
+                            <option>ED</option>
+                            <option>EE</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Time 1 (UTC)</label>
+                        <input type="text" class="form-control" name="time1" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Time 2 (UTC)</label>
+                        <input type="text" class="form-control" name="time2" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">X Coordinate</label>
+                        <input type="text" class="form-control" name="x_coord" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Y Coordinate</label>
+                        <input type="text" class="form-control" name="y_coord" required>
+                    </div>
+                    <button type="submit" class="btn btn-kingdom">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% if entries %}
+<div class="table-responsive">
+<table class="table table-dark table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Site Type</th>
+            <th>Alliance</th>
+            <th>Time 1</th>
+            <th>Time 2</th>
+            <th>X</th>
+            <th>Y</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in entries %}
+        <tr>
+            <td>{{ e['site_type'] }}</td>
+            <td>{{ e['alliance'] }}</td>
+            <td>{{ e['time1'] }}</td>
+            <td>{{ e['time2'] }}</td>
+            <td>{{ e['x_coord'] }}</td>
+            <td>{{ e['y_coord'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endif %}
+<a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+{% endblock %}
